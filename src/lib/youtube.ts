@@ -50,14 +50,52 @@ export function buildStoredEmbedUrl(videoId: string) {
   return `https://www.youtube.com/embed/${videoId}?playsinline=1&controls=0&modestbranding=1&rel=0&enablejsapi=1`
 }
 
-export function buildPlayerUrl(storedEmbedUrl: string, opts: { autoplay?: boolean; muted?: boolean } = {}) {
-  const { autoplay = false, muted = false } = opts
-  const url = new URL(storedEmbedUrl)
-  if (autoplay) url.searchParams.set('autoplay', '1')
-  if (muted) url.searchParams.set('mute', '1')
-  url.searchParams.set('origin', window.location.origin)
-  return url.toString()
+function extractVideoId(url: string) {
+  const s = String(url || '')
+  const m =
+    s.match(/\/embed\/([a-zA-Z0-9_-]{11})/) ||
+    s.match(/[?&]v=([a-zA-Z0-9_-]{11})/) ||
+    s.match(/\/shorts\/([a-zA-Z0-9_-]{11})/) ||
+    s.match(/youtu\.be\/([a-zA-Z0-9_-]{11})/)
+  return m?.[1] || null
 }
+
+export function buildPlayerUrl(
+  storedEmbedUrl: string,
+  opts: { autoplay?: boolean; muted?: boolean } = {}
+) {
+  const autoplay = opts.autoplay ? '1' : '0'
+  const mute = opts.muted ? '1' : '0'
+
+  // Make sure we have an embed base
+  const videoId = extractVideoId(storedEmbedUrl)
+  const base = videoId ? `https://www.youtube.com/embed/${videoId}` : storedEmbedUrl
+
+  const u = new URL(base)
+
+  // Clean player UI as much as YouTube allows
+  u.searchParams.set('autoplay', autoplay)
+  u.searchParams.set('mute', mute)
+  u.searchParams.set('playsinline', '1')
+  u.searchParams.set('controls', '0')
+  u.searchParams.set('modestbranding', '1')
+  u.searchParams.set('rel', '0')
+  u.searchParams.set('iv_load_policy', '3')
+  u.searchParams.set('fs', '0')
+  u.searchParams.set('disablekb', '1')
+
+  // Loop forever (YouTube requires playlist=<videoId> for loop to work)
+  if (videoId) {
+    u.searchParams.set('loop', '1')
+    u.searchParams.set('playlist', videoId)
+  }
+
+  // Enable JS API (you already use postMessage commands)
+  u.searchParams.set('enablejsapi', '1')
+
+  return u.toString()
+}
+
 
 export function extractHashtags(caption: string): string[] {
   const tags = new Set<string>()
