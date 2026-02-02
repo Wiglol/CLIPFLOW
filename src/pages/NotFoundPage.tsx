@@ -8,7 +8,7 @@ export default function NotFoundPage() {
     <div className="mx-auto max-w-[820px] px-4 pb-20 pt-20 sm:pt-24">
       <EmptyState
         title="Page not found"
-        hint="That link doesn’t exist, or it was removed."
+        hint="That link doesn’t exist, or it was Removed."
         action={<Button onClick={() => navigate('/')} variant="solid" aria-label="Back to feed">Back to feed</Button>}
       />
     </div>
