@@ -49,6 +49,8 @@ export default function ProfilePage() {
   const [bio, setBio] = useState('')
   const [editBusy, setEditBusy] = useState(false)
   const [editErr, setEditErr] = useState<string | null>(null)
+  const [deletingId, setDeletingId] = useState<string | null>(null)
+
   
     useEffect(() => {
     if (user && !meProfile) {
@@ -61,6 +63,33 @@ export default function ProfilePage() {
     const next = window.location.pathname + window.location.search
     navigate(`/auth?next=${encodeURIComponent(next)}`)
   }
+  
+  const onDeletePost = async (postId: string) => {
+  if (!user) {
+    requireAuth()
+    return
+  }
+
+  if (deletingId) return
+
+  const ok = window.confirm('Delete this post? This cannot be undone.')
+  if (!ok) return
+
+  setDeletingId(postId)
+  setErr(null)
+
+  try {
+    const { error } = await supabase.from('posts').delete().eq('id', postId)
+    if (error) throw error
+
+    setPosts((prev) => prev.filter((x) => x.id !== postId))
+  } catch (e) {
+    setErr(humanError(e))
+  } finally {
+    setDeletingId(null)
+  }
+}
+
 
   useEffect(() => {
     let alive = true
@@ -346,6 +375,17 @@ export default function ProfilePage() {
                     <a href={po.original_url} target="_blank" rel="noreferrer" className="text-muted hover:text-fg focus-visible:safe-focus" aria-label="Open on YouTube">
                       YouTube
                     </a>
+                    {isMe ? (
+                      <button
+                        type="button"
+                        onClick={() => onDeletePost(po.id)}
+                        disabled={deletingId === po.id}
+                        className="text-danger hover:text-danger/90 disabled:opacity-60 focus-visible:safe-focus"
+                        aria-label="Delete post"
+                      >
+                        {deletingId === po.id ? 'Deleting…' : 'Delete'}
+                      </button>
+                    ) : null}
                   </div>
                 </div>
               </div>
@@ -366,3 +406,4 @@ export default function ProfilePage() {
     </div>
   )
 }
+
