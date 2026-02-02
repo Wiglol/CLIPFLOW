@@ -207,7 +207,7 @@ useEffect(() => {
     <div className="fixed left-0 right-0 top-14 z-40 border-b border-stroke/20 bg-bg/70 backdrop-blur supports-[backdrop-filter]:bg-bg/60">
       <div className="mx-auto flex max-w-[1100px] items-center justify-between px-4 py-3">
         <UnderlineTabs value={mode} onChange={setMode} tabs={tabs} />
-        <div className="hidden text-xs text-muted sm:block">Arrow keys switch clips</div>
+        <div className="hidden text-xs text-muted sm:block"></div>
       </div>
     </div>
   )
