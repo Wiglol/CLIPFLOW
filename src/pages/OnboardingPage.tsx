@@ -183,7 +183,7 @@ export default function OnboardingPage() {
               hint="Public. Used in profile links."
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              placeholder="wiglol"
+              placeholder="YourName"
               autoComplete="username"
               right=""
               error={null}
@@ -195,7 +195,7 @@ export default function OnboardingPage() {
               hint="Optional. Friendly name on your profile."
               value={displayName}
               onChange={(e) => setDisplayName(e.target.value)}
-              placeholder="Wiggo"
+              placeholder="GamerBoy123"
               autoComplete="name"
               error={null}
               aria-label="Display name"
