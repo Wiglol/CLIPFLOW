@@ -13,6 +13,22 @@ function clamp(n: number, a: number, b: number) {
   return Math.max(a, Math.min(b, n))
 }
 
+function extractVideoId(url: string) {
+  const s = String(url || '')
+  const m =
+    s.match(/\/embed\/([a-zA-Z0-9_-]{11})/) ||
+    s.match(/[?&]v=([a-zA-Z0-9_-]{11})/) ||
+    s.match(/\/shorts\/([a-zA-Z0-9_-]{11})/) ||
+    s.match(/youtu\.be\/([a-zA-Z0-9_-]{11})/)
+  return m?.[1] || null
+}
+
+function thumbUrlFromAnyUrl(url: string) {
+  const id = extractVideoId(url)
+  return id ? `https://i.ytimg.com/vi/${id}/hqdefault.jpg` : null
+}
+
+
 
 function applyAudio(iframe: HTMLIFrameElement, muted: boolean, volume: number) {
   if (muted || volume <= 0) {
@@ -73,6 +89,7 @@ export default function YouTubePlayer({
   const iframeH = fitByWidth ? box.w / targetAspect : box.h
 
 
+
   // Commands after load
   useEffect(() => {
     const iframe = iframeRef.current
@@ -118,8 +135,20 @@ return () => timers.forEach((id) => window.clearTimeout(id))
     }
   }, [muted, volume, active, shouldLoad])
 
+  const bgThumb = useMemo(() => thumbUrlFromAnyUrl(storedEmbedUrl), [storedEmbedUrl])
+
   return (
     <div ref={wrapRef} className="relative h-full w-full overflow-hidden bg-black">
+      {bgThumb ? (
+        <img
+          src={bgThumb}
+          alt=""
+          className="absolute inset-0 h-full w-full scale-110 object-cover blur-3xl opacity-40"
+          loading="lazy"
+          aria-hidden="true"
+        />
+      ) : null}
+
       <iframe
         ref={iframeRef}
         src={src}
@@ -147,4 +176,4 @@ return () => timers.forEach((id) => window.clearTimeout(id))
       />
     </div>
   )
-}
+
