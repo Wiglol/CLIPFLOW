@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="robots" content="noindex" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CLIPFLOW</title>
+  </head>
+  <body>
+    <script>
+      ;(() => {
+        // Store the full path so index.html can restore it.
+        const key = 'gh_redirect'
+        const url = window.location.pathname + window.location.search + window.location.hash
+        sessionStorage.setItem(key, url)
+        // Go to the SPA entry point (keeps base path).
+        const parts = window.location.pathname.split('/').filter(Boolean)
+        // parts = [repo, ...]
+        const repo = parts.length ? parts[0] : ''
+        window.location.replace('/' + repo + '/')
+      })()
+    </script>
+  </body>
+</html>

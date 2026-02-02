@@ -1,0 +1,61 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg: 10 11 14;
+  --panel: 16 18 23;
+  --panel2: 21 24 31;
+  --stroke: 42 47 59;
+  --fg: 236 237 241;
+  --muted: 159 165 178;
+  --brand: 186 199 255;
+  --danger: 255 120 120;
+  --ok: 126 232 170;
+}
+
+html,
+body {
+  height: 100%;
+  background: rgb(var(--bg));
+  color: rgb(var(--fg));
+}
+
+body {
+  font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+a {
+  color: inherit;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+/* Overlay safety: hidden overlays must not block clicks. */
+*[hidden] {
+  display: none !important;
+}
+
+/* Calm, visible focus without neon. */
+.safe-focus:focus-visible {
+  outline: 2px solid rgba(186, 199, 255, 0.6);
+  outline-offset: 2px;
+}
+
+/* Snap scrolling feel: smoother on iOS */
+.snap-y {
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Reduce motion */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    scroll-behavior: auto !important;
+    transition: none !important;
+    animation: none !important;
+  }
+}
