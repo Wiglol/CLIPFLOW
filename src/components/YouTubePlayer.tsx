@@ -62,14 +62,16 @@ export default function YouTubePlayer({
     return () => ro.disconnect()
   }, [])
 
-  // Compute iframe size to "cover" container using aspect hint
+  // Compute iframe size to "contain" inside container using aspect hint
   // shorts = 9/16, video = 16/9
+  // This avoids cropping the top/bottom of vertical videos on some viewports.
   const targetAspect = aspectHint === 'video' ? 16 / 9 : 9 / 16
   const containerAspect = box.h > 0 ? box.w / box.h : 1
-  const coverByWidth = containerAspect > targetAspect
+  const fitByWidth = containerAspect < targetAspect
 
-  const iframeW = coverByWidth ? box.w : box.h * targetAspect
-  const iframeH = coverByWidth ? box.w / targetAspect : box.h
+  const iframeW = fitByWidth ? box.w : box.h * targetAspect
+  const iframeH = fitByWidth ? box.w / targetAspect : box.h
+
 
   // Commands after load
   useEffect(() => {
